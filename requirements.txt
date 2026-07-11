@@ -1,4 +1,4 @@
 streamlit
 yfinance
 pandas
-MetaTrader5
+metatrader5
