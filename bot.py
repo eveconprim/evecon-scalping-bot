@@ -22,18 +22,17 @@ else:
     # --- الـ Dashboard ---
     st.title("📈 Evecon Prime v6 Dashboard")
     
-    # اختيار العملة والفريم
+    # اختيار العملة والفريم - تم ضبط الرموز لضمان جلب البيانات الصحيحة
     col1, col2 = st.columns(2)
     with col1:
-        # استخدام قاموس ليكون العرض واضحاً
-        assets = {"Gold": "GC=F", "EUR/USD": "EURUSD=X", "GBP/USD": "GBPUSD=X"}
+        assets = {"Gold": "XAUUSD=X", "EUR/USD": "EURUSD=X", "GBP/USD": "GBPUSD=X"}
         selected_name = st.selectbox("Select Asset", list(assets.keys()))
         ticker = assets[selected_name]
     with col2:
         interval = st.selectbox("Select Timeframe", ["5m", "15m", "1h", "4h", "1d"])
 
-    # جلب البيانات
-    data = yf.download(ticker, period="1d", interval=interval)
+    # جلب البيانات - تم إضافة فترة أطول لضمان وجود بيانات للشارت
+    data = yf.download(ticker, period="5d", interval=interval)
 
     # التحقق من وجود بيانات
     if not data.empty:
@@ -44,10 +43,14 @@ else:
                         low=data['Low'],
                         close=data['Close'])])
         
-        fig.update_layout(title=f"{selected_name} Chart", xaxis_rangeslider_visible=False)
+        fig.update_layout(
+            title=f"{selected_name} Real-time Chart", 
+            xaxis_rangeslider_visible=False,
+            template="plotly_dark" # إضافة ثيم دارك احترافي
+        )
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.warning("جاري جلب البيانات، يرجى الانتظار...")
+        st.error("لم يتم العثور على بيانات، حاول تغيير الفريم الزمني.")
 
     if st.button("Logout"):
         st.session_state.logged_in = False
