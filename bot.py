@@ -1,18 +1,34 @@
 import streamlit as st
-import MetaTrader5 as mt5
-import pandas as pd
-import time
 
-# إعداد واجهة Streamlit
-st.set_page_config(page_title="Evecon Trade", layout="wide")
-st.title("Premium Scalping System")
-st.subheader("High-Frequency Momentum Engine (MT5 Direct Bridge)")
+# إعداد الصفحة
+st.set_page_config(page_title="Evecon Trade - Login", page_icon="🦅")
 
-# كود الربط مع MT5
-if not mt5.initialize():
-    st.error("خطأ: تعذر الاتصال بـ MetaTrader 5. تأكد أن المنصة مفتوحة على جهازك.")
+# قاعدة بيانات وهمية للأكواد (بعدين نربطها بجدول)
+VALID_CODES = ["EVECON2026", "VIP123"]
+
+def main():
+    st.title("🦅 Evecon Trade Platform")
+    st.subheader("Please enter your access code")
+
+    code = st.text_input("Access Code", type="password")
+    
+    if st.button("Login"):
+        if code in VALID_CODES:
+            st.session_state.logged_in = True
+            st.success("Welcome back, Youssef!")
+            st.rerun()
+        else:
+            st.error("Invalid Code!")
+
+# منطق الجلسة
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+    main()
 else:
-    st.success("تم الربط بنجاح مع MT5")
-
-# تحديث الواجهة
-st.write("البوت جاهز للعمل...")
+    st.title("Dashboard")
+    st.write("Welcome to your Evecon Prime v6 workspace!")
+    if st.button("Logout"):
+        st.session_state.logged_in = False
+        st.rerun()
